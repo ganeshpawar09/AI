@@ -1,54 +1,57 @@
 import heapq
 
-def prim(graph):
-    n = len(graph)
-    visited = [False] * n
-    min_heap = []
-    mst_cost = 0
-    mst = []
+def prims_algo(graph):
+    mini_span_tree=[]
+    mst_cost=0
+    min_heap=[]
+    visited=set()
 
-    # Start from vertex 0
-    heapq.heappush(min_heap, (0, 0, -1))  # (weight, vertex, parent)
+    heapq.heappush(min_heap, (0, 0, -1)) #weight, curr_vertex, parent
 
     while min_heap:
-        weight, vertex, parent = heapq.heappop(min_heap)
-        if visited[vertex]:
+        weight, curr_vertex, parent=heapq.heappop(min_heap)
+
+        if curr_vertex in visited:
             continue
-        if parent != -1:
-            mst.append((parent, vertex))
         
-        mst_cost += weight
-        visited[vertex] = True
+        if parent != -1:
+            mini_span_tree.append((parent, curr_vertex))
+        
+        mst_cost+=weight
 
-        for neighbour, weight in graph[vertex]:
-            if not visited[neighbour]:
-                heapq.heappush(min_heap, (weight, neighbour, vertex))
+        visited.add(curr_vertex)
 
-    return mst_cost, mst
+        for vertex, weight in graph[curr_vertex]:
+            if vertex not in visited:
+                heapq.heappush(min_heap,(weight, vertex, curr_vertex))
 
-def build_graph():
-    graph = {}
-    n = int(input("Enter the number of vertices: "))
-    print("Enter the adjacency list for each vertex (vertex weight), one vertex per line:")
-    for i in range(n):
-        adjacency_list = []
-        adjacency_vertex = int(input(f"Enter the number of adjacent vertices for vertex {i}: "))
-        for edge in range(adjacency_vertex):
-            vertex = int(input("Enter the adjacent vertex: "))
-            weight = int(input(f"Enter the weight from {i} to {vertex}: "))
-            adjacency_list.append((vertex, weight))
-        graph[i] = adjacency_list
-    return graph
+    return mini_span_tree, mst_cost
+
 
 if __name__=="__main__":
-    # graph = build_graph()
-    graph = {
-        0: [(1, 2), (2, 1)],
-        1: [(0, 2), (2, 1)],
-        2: [(0, 1), (1, 1)]
+    # graph={}
+    # vertex=int(input("Enter the number of vertices: "))
+    # for i in range(vertex):
+    #     adj_list=[]
+    #     adj_vertex=int(input("Enter the number of adjacent vertex: "))
+    #     for j in range(adj_vertex):
+    #         curr_adj_vertex, curr_edge_weight=map(int, input("Enter the Adjacent Vertex and Weight of Edge (v, w): ").split())
+    #         adj_list.append((curr_adj_vertex, curr_edge_weight))
+    #     graph[i]=adj_list
+
+    graph={
+        0 :[(1, 1), (2, 3)],
+        1 :[(0, 1), (2, 2), (3, 4)],
+        2 :[(0, 3), (1, 2), (3, 5), (4, 6)],
+        3 :[(1, 4), (2, 5), (4, 7)],
+        4 :[(2, 6), (3, 7)]
     }
-    mst_cost, mst = prim(graph)
-    print("Minimum Spanning Tree Cost:", mst_cost)
-    print("Minimum Spanning Tree Edges:")
-    for edge in mst:
-        print(edge)
+
+    mini_span_tree, mst_cost=prims_algo(graph)
+
+    print("Minimum cost to create MST is: ", mst_cost)
+
+    print("Mininimum Spanning Tree :")
+
+    for u, v in mini_span_tree:
+        print(f"{u} -> {v}")

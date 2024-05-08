@@ -1,47 +1,43 @@
-def isSafe(board, n, currRow, currCol):
-    # Check column
-    for i in range(currRow):
-        if board[i][currCol] == 'Q':
-            return False
+def is_safe(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag):
+    if columns[curr_col] == 0 and upper_right_diag[curr_col + curr_row] == 0 and upper_left_diag[curr_row - curr_col + queens - 1] == 0:
+        return True
+    return False
 
-    # Check upper left diagonal
-    row, col = currRow, currCol
-    while row >= 0 and col >= 0:
-        if board[row][col] == 'Q':
-            return False
-        row -= 1
-        col -= 1
+def set_1(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag):
+    columns[curr_col] = 1
+    upper_left_diag[curr_row - curr_col + queens - 1] = 1
+    upper_right_diag[curr_row + curr_col] = 1
 
-    # Check upper right diagonal
-    row, col = currRow, currCol
-    while row >= 0 and col < n:
-        if board[row][col] == 'Q':
-            return False
-        row -= 1
-        col += 1
+def set_0(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag):
+    columns[curr_col] = 0
+    upper_left_diag[curr_row - curr_col + queens - 1] = 0
+    upper_right_diag[curr_row + curr_col] = 0
 
-    return True
-
-
-def solve(board, n, currRow):
-    
-    if currRow >= n:
+def place_n_queens(board, queens, curr_row, columns, upper_left_diag, upper_right_diag):
+    if curr_row >= queens:
         return True
 
-    for currCol in range(n):
-        if isSafe(board, n, currRow, currCol):
-            board[currRow][currCol] = 'Q'
-            if solve(board, n, currRow + 1):
+    for curr_col in range(queens):
+        if is_safe(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag):
+            board[curr_row][curr_col] = 'Q'
+            set_1(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag)
+            if place_n_queens(board, queens, curr_row + 1, columns, upper_left_diag, upper_right_diag):
                 return True
-            board[currRow][currCol] = '.'
+            board[curr_row][curr_col] = '.'
+            set_0(curr_row, curr_col, queens, columns, upper_left_diag, upper_right_diag)
 
     return False
 
 if __name__ == "__main__":
-    n = int(input("Enter the number of queens: "))
-    board = [['.'] * n for _ in range(n)]
-    solve(board, n, 0)
-    for currRow in range(n):
-        for currCol in range(n):
-            print(board[currRow][currCol], end=' |')
+    queens = int(input("Enter the number of queens: "))
+    board = [['.'] * queens for _ in range(queens)]
+    columns = [0] * queens
+    upper_left_diag = [0] * (2 * queens - 1)
+    upper_right_diag = [0] * (2 * queens - 1)
+
+    place_n_queens(board, queens, 0, columns, upper_left_diag, upper_right_diag)
+
+    for row in range(queens):
+        for col in range(queens):
+            print(board[row][col], end="  |  ")
         print()

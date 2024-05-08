@@ -1,55 +1,68 @@
-class DisjointSet:
-    def __init__(self, n):
-        self.parent = [i for i in range(n)]
-        self.rank = [0] * n
-
+class DisJointSet():
+    def __init__(self, vertex):
+        self.vertex=vertex
+        self.parent=[i for i in range(vertex)]
+        self.rank=[0]*vertex
+    
     def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])  
+        if self.parent[x]!=x:
+            self.parent[x]=self.find(self.parent[x])
         return self.parent[x]
+    
+    def union(self, u, v):
+        u_root=self.find(u)
+        v_root=self.find(v)
 
-    def union(self, x, y):
-        x_root = self.find(x)
-        y_root = self.find(y)
-
-        if x_root == y_root:
+        if u_root==v_root:
             return
-
-        if self.rank[x_root] < self.rank[y_root]:
-            self.parent[x_root] = y_root
-        elif self.rank[x_root] > self.rank[y_root]:
-            self.parent[y_root] = x_root
+        
+        if self.rank[u_root] > self.rank[v_root]:
+            self.parent[v_root]=u_root
+        elif self.rank[u_root] < self.rank[v_root]:
+            self.parent[u_root]=v_root
         else:
-            self.parent[y_root] = x_root
-            self.rank[x_root] += 1
+            self.parent[v_root]=u_root
+            self.rank[u_root]+=1
+        
+def kruskal_algo(graph, vertex):
+    mini_span_tree=[]
+    mst_cost=0
 
-def kruskal_mst(graph):
-    result = []
-    graph = sorted(graph, key=lambda item: item[2])
-    ds = DisjointSet(len(graph))
+    graph=sorted(graph, key=lambda item:item[2])
+    ds=DisJointSet(vertex)
 
     for u, v, w in graph:
-        if ds.find(u) != ds.find(v):
-            result.append([u, v, w])
-            ds.union(u, v)
+        if ds.find(u)!=ds.find(v):
+            mini_span_tree.append((u, v))
+            mst_cost+=w
+        ds.union(u, v)
+    
+    return mini_span_tree, mst_cost
 
-    return result
+if __name__=="__main__":
+    # graph=[]
+    # vertex=int(input("Enter the number of vertices: "))
+    # edges=int(input("Enter the number of edges: "))
+    # print
+    # for i in range(edges):
+    #     starting_vertex, ending_vertex, weight=map(int, input("Enter the edges starting, ending vertex and weight: ").split())
+    #     graph.append((starting_vertex, ending_vertex, weight))
+    vertex=5
+    graph = [
+        (0, 1, 2), 
+        (0, 3, 4), 
+        (1, 2, 3), 
+        (1, 3, 1), 
+        (1, 4, 5), 
+        (2, 4, 6), 
+        (3, 4, 7)  
+    ]
 
-def main():
-    n = int(input("Enter the number of vertices: "))
-    m = int(input("Enter the number of edges: "))
+    mini_span_tree, mst_cost=kruskal_algo(graph, vertex)
 
-    graph = []
-    for i in range(m):
-        u=int(input(f"Enter the starting Index of edge {i} :"))
-        v=int(input(f"Enter the ending Index of edge {i} :"))
-        w=int(input(f"Enter the weight of edge {i} :"))
-        graph.append((u, v, w))
+    print("Minimum cost to create MST is: ", mst_cost)
 
-    mst = kruskal_mst(graph)
-    print("Edges in the MST:")
-    for u, v, weight in mst:
-        print(f"{u} -- {v} == {weight}")
+    print("Mininimum Spanning Tree :")
 
-if __name__ == "__main__":
-    main()
+    for u, v in mini_span_tree:
+        print(f"{u} -> {v}")

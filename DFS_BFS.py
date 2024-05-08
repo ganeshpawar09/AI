@@ -1,44 +1,33 @@
 import queue
-def DFS(currEle, graph, visited=set()):
-    print(currEle, end=' ')
-    visited.add(currEle)
-    for neighbour in graph[currEle]:
-        if neighbour not in visited:
-            DFS(neighbour, graph, visited)
+def dfs(graph, currVertex, visited=set()):
+    print(currVertex, end="  ")
+    visited.add(currVertex)
+    for adjVertex in graph[currVertex]:
+        if adjVertex not in visited:
+            dfs(graph, adjVertex, visited)
 
-def BFS(currEle, graph):
-    visited = set()
-    que = queue.Queue()
-    visited.add(currEle)
-    que.put(currEle)
-    
-    while queue:
-        s = que.get()
-        print(s, end=' ')
-        for neighbour in graph[s]:
-            if neighbour not in visited:
-                que.put(neighbour)
-                visited.add(neighbour)
+def bfs(graph, currVertex):
+    visited=set()
+    que= queue.Queue()
+    que.put(currVertex)
+    visited.add(currVertex)
 
-if __name__ == "__main__":
-    # graph = {}
-    
-    # n = int(input("Enter the number of vertices: "))
-    # print("Enter the adjacency list for each vertex (vertex neighbours separated by space), one vertex per line:")
-    # for i in range(n):
-    #     adjacency_list = list(map(int, input(f"Enter neighbours for vertex {i}: ").split()))
-    #     graph[i] = adjacency_list
-    graph = {
-        'A': ['B', 'C'],
-        'B': ['A', 'D', 'E'],
-        'C': ['A', 'F'],
-        'D': ['B'],
-        'E': ['B', 'F'],
-        'F': ['C', 'E']
-    }
-    print("DFS traversal:")
-    DFS('A', graph)
-    print("\nBFS traversal:")
-    BFS('A', graph)
-   
-    
+    while que:
+        frontVertex=que.get()
+        print(frontVertex, end="  ")
+        for adjVertex in graph[frontVertex]:
+            if adjVertex not in visited:
+                que.put(adjVertex)
+                visited.add(adjVertex)
+
+if __name__=="__main__":
+    graph={}
+    vertex=int(input("Enter the number of vertex: "))
+    for i in range (vertex):
+        adjacent_list=list(map(int, input(f"Enter the adjacent vertices of vertex {i} :")))
+        graph[i]=adjacent_list
+
+    print("\nDFS of given graph: ")
+    dfs(graph, 0)
+    print("\nBFS of given graph: ")
+    bfs(graph, 0)
