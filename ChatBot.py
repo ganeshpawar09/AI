@@ -10,11 +10,11 @@ pairs=[
     # Or expression
     [
         r"Hi|Hello|Hey there|Hola",
-        ["Hello my name is Hiesenberg"]
+        ["Hello my name is Jarvis"]
     ],
     [
         r"what is your name ?",
-        ["I am a bot created by Heisenbergwhat. you can call me crazy!",]
+        ["You can call me Jarvis!",]
     ],
     [
         r"how are you ?",
@@ -42,7 +42,7 @@ pairs=[
     ],
     [
         r"(.*) created ?",
-        ["Raghav created me using Python's NLTK library ","top secret ;)",]
+        ["Ganesh created me using Python's NLTK library ","top secret ;)",]
     ],
     [
         r"(.*) (location|city) ?",
@@ -89,7 +89,7 @@ pairs=[
 ]
 
 def chat():
-    print("Hey there! I am Heisenberg at your service")
+    print("Hey there! I am Jarvis at your service")
     chat = Chat(pairs)
     chat.converse()
 

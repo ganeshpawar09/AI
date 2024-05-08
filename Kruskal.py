@@ -1,33 +1,37 @@
-def find(parent, i):
-    if parent[i] == i:
-        return i
-    return find(parent, parent[i])
+class DisjointSet:
+    def __init__(self, n):
+        self.parent = [i for i in range(n)]
+        self.rank = [0] * n
 
-def union(parent, rank, x, y):
-    x_root = find(parent, x)
-    y_root = find(parent, y)
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  
+        return self.parent[x]
 
-    if rank[x_root] < rank[y_root]:
-        parent[x_root] = y_root
-    elif rank[x_root] > rank[y_root]:
-        parent[y_root] = x_root
-    else:
-        parent[y_root] = x_root
-        rank[x_root] += 1
+    def union(self, x, y):
+        x_root = self.find(x)
+        y_root = self.find(y)
+
+        if x_root == y_root:
+            return
+
+        if self.rank[x_root] < self.rank[y_root]:
+            self.parent[x_root] = y_root
+        elif self.rank[x_root] > self.rank[y_root]:
+            self.parent[y_root] = x_root
+        else:
+            self.parent[y_root] = x_root
+            self.rank[x_root] += 1
 
 def kruskal_mst(graph):
     result = []
     graph = sorted(graph, key=lambda item: item[2])
-    parent = [i for i in range(len(graph))]
-    rank = [0] * len(graph)
+    ds = DisjointSet(len(graph))
 
     for u, v, w in graph:
-        x = find(parent, u)
-        y = find(parent, v)
-
-        if x != y:
+        if ds.find(u) != ds.find(v):
             result.append([u, v, w])
-            union(parent, rank, x, y)
+            ds.union(u, v)
 
     return result
 
@@ -36,9 +40,10 @@ def main():
     m = int(input("Enter the number of edges: "))
 
     graph = []
-    print("Enter edges in the format 'u v w', where u and v are vertices and w is weight:")
-    for _ in range(m):
-        u, v, w = map(int, input().split())
+    for i in range(m):
+        u=int(input(f"Enter the starting Index of edge {i} :"))
+        v=int(input(f"Enter the ending Index of edge {i} :"))
+        w=int(input(f"Enter the weight of edge {i} :"))
         graph.append((u, v, w))
 
     mst = kruskal_mst(graph)
