@@ -24,7 +24,7 @@ if __name__=="__main__":
     graph={}
     vertex=int(input("Enter the number of vertex: "))
     for i in range (vertex):
-        adjacent_list=list(map(int, input(f"Enter the adjacent vertices of vertex {i} :")))
+        adjacent_list=list(map(int, input(f"Enter the adjacent vertices of vertex {i} :").split()))
         graph[i]=adjacent_list
 
     print("\nDFS of given graph: ")
